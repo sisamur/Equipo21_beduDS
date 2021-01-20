@@ -1,4 +1,4 @@
-![img](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSR7ctjl2SNoJ75wmNwRxXuI83QC8SYvcNVg&usqp=CAU)  ![img](https://pwa.bedu.org/assets/images/logo-black.png) 
+![img](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSR7ctjl2SNoJ75wmNwRxXuI83QC8SYvcNVg&usqp=CAU)  ![img](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjdWNKYFd2PEpnvAwFxbgd8cE1SHzwSZ9slA&usqp=CAU) 
 
 # Equipo21_beduDS
 
