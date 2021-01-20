@@ -1,4 +1,4 @@
-![img](https://www.pikpng.com/pngl/m/473-4735876_banco-santander-logo-bristol-cats-study-clipart.png)  ![img](https://pwa.bedu.org/assets/images/logo-black.png) 
+![img](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSR7ctjl2SNoJ75wmNwRxXuI83QC8SYvcNVg&usqp=CAU)  ![img](https://pwa.bedu.org/assets/images/logo-black.png) 
 
 # Equipo21_beduDS
 
