@@ -8,6 +8,7 @@ Este repositorio tiene como objeto, el ser utilizado para subir la evidencia cor
 * Carrillo de la Cruz Juan Luis
 * Cervantes Varela José Luis
 * Escobar Alfonso Miguel 
+* María Montero Dulce
 
 
 
