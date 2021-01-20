@@ -1,4 +1,4 @@
-![img](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Rn7E1rCIZY9Yak4UZoA0hiNM4n0xLKZXbQ&usqp=CAU) ![img](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSR7ctjl2SNoJ75wmNwRxXuI83QC8SYvcNVg&usqp=CAU) 
+![img align="right" width="100" height="100"](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Rn7E1rCIZY9Yak4UZoA0hiNM4n0xLKZXbQ&usqp=CAU) ![img](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSR7ctjl2SNoJ75wmNwRxXuI83QC8SYvcNVg&usqp=CAU) 
 
 # Equipo21_beduDS
 
