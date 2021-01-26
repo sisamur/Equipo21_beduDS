@@ -8,8 +8,6 @@
 
 #cargamos las librerias
 suppressWarnings(suppressMessages(library(dplyr)))
-#suppressWarnings(suppressMessages(library(reshape2)))
-#suppressWarnings(suppressMessages(library(ggplot2)))
 
 
 u.1718 <- "https://www.football-data.co.uk/mmz4281/1718/SP1.csv"
@@ -74,28 +72,36 @@ pt.vc <-  p.casa %*% t(p.vis)
 #el punto 1, son iguales a 1 (en tal caso tendríamos independencia de las 
 #variables aleatorias X y Y).
 
+#creamos una lista con 10000 tablas, obtenidas a partir de un bootstrap
+#de diferentes muestras tomadas 
 
-library(boot)
+t.co = vector(mode="list", length=10000)
 
-set.seed(1234)
-
-function_1 <- function(data, i){
-  d2 <- mean(data[i,])
-  return(d2)
+for(i in 1:10000) {
+  #tomamos la muestra
+  sm = sample(dim(d.liga)[1], size = 666, replace=T)
+  dt.n = d.liga[sm,]
+  #calculamos las probabilidades goles (casa y visitante)
+  p.casa <- round( (table(dt.n$FTHG) / dim(dt.n)[1]), digits = 3)
+  p.vis <- round( (table(dt.n$FTAG) / dim(dt.n)[1]), digits = 3)
+  #probabilidades conjuntas
+  p.con <- round(table(dt.n$FTHG, dt.n$FTAG) / dim(dt.n)[1], digits = 3)
+  #probabilidades marginales
+  pt.vc <-  p.casa %*% t(p.vis)
+  #tabla de cocientes en una vector
+  t.co[[i]] <- round(p.con / pt.vc, digits = 3)
+  
 }
 
-vt.c <- as.vector(t.c)
-(r.sam <- boot(t.c, function_1, R = 1000))
-r.sam$t0
-colMeans(r.sam$t)
-hist(r.sam$t[,1])
+#Creamos un vector para analizar los valores, dependiendo de la relacion 
+#a analizar en la tabla de cocientes, por ejemplo tenemos 0 goles en casa
+#con 1 gol como visitante
+g.casa = "6"
+g.visi = "2"
 
-#matrix(as.vector(t.c), nrow = 9, ncol = 7)
-
-#loop example
-#x <- c()
-#for (i in 1:100) {
-#  x1 <- cocientes[i]
-#  x <- c(x, x1) 
-#}
-#x
+x = c()
+for(i in 1:10000){ 
+  x1 <- t.co[[i]][g.casa,g.visi]
+  x <- c(x, x1)
+}
+hist(x)
