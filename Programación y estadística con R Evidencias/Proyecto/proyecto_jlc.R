@@ -49,7 +49,9 @@ anuncios.m1 = melt(anuncios, id.vars = c("Ventas"),
 
 ggplot(anuncios.m1, aes(x=variable, y=value)) +
   geom_boxplot(aes(fill=factor(variable)))+
-  labs(fill = "Medio de comunicación")
+  ylab("Costo de Publicidad ($)") +
+  xlab("") + 
+  labs(xlab = "", fill = "Medio de comunicación")
 
 ## 7. histogramas
 
@@ -136,3 +138,32 @@ anun.cor1 %>%
   geom_text(aes(label=value),  vjust=-0.3, size=3.5) + 
   theme_minimal() +
   labs(x='',y='', fill='Coeficiente de Correlación') 
+
+#10. Regresion lineal multiple
+
+# partimos de una prueba de hipotesis donde 
+#H0: beta3 = beta5 = beta6 = beta7 = 0
+# es decir Ventas = beta0 + beta1*TV + beta2*radio + beta4*periodico + e (Reducido)
+# contra
+# H1: H0 no es verdad
+
+attach(anuncios)
+m1 <- lm(Ventas ~ TV + radio +  periodico)
+
+summary(m1)
+round(vcov(m1),8)
+confint(m1,level=0.95) #Intervalos de confianza
+predict.at=data.frame(
+  TV=100, radio=30, periodico=40) #x0=(100,30,40)
+predict(m1,newdata=predict.at,
+        interval="prediction",level=0.95) #Pred Int for hat y0 given x0
+anova(m1)
+
+#como podemos observar, y a partir del heatmap, el coeficiente 
+#de regresion para el numero de ventas por periodico 
+#no es estadisticamente significativo por lo que ajustamos el modelo sin
+#la variable mencionada anteriormente
+
+m2 <- update(m1, ~.-periodico)
+summary(m2)
+
