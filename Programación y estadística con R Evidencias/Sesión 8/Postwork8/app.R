@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 #install.packages("shinythemes")
 library(shinythemes)
+library(dplyr)
 
 setwd("D:/documentos/Santander bedu/Fase 2/Repositorio/Evidencia/Programación y estadística con R Evidencias/Sesión 8")
 datos<-read.csv("data/data.csv")
