@@ -20,12 +20,12 @@ anuncios <- rename(anuncios, Ventas = sales, periodico = newspaper)
 #observando sus características
 str(anuncios); dim(anuncios)
 head(anuncios); summary(anuncios)
-View(anuncios)
+#View(anuncios)
 
 ##5. Se procede a realizar unas gráficas que permitan conocer la 
 #distribución de los datos, conociendo su media y su desviación estandar
 
-anuncios <- na.omit(anuncios) #esta de sobra  
+#anuncios <- na.omit(anuncios) #esta de sobra  
 
 ###Medidas de tendencia central
 
@@ -113,34 +113,13 @@ p4 <- anuncios %>%
   geom_label(aes(x = media_perio, y = 0.031, 
                  label = media_perio), fill = "#FF6666")
 
-#multiplot
+#multiplot hisrogramas
 grid.arrange(p1, p2, p3, p4, nrow = 2)
 
 
+##8. Correlaciones entre los datos
 
-##8. Antes de pensar en el modelado, es interesante observar 
-#como se distribuyen los datos en una grafica con respecto a las ventas
-
-p5 <- anuncios.m1 %>%
-  ggplot()+ 
-  aes(x=value,y=Ventas, color=variable) + 
-  geom_point() 
-
-p6 <- anuncios.m1 %>%
-  ggplot() + 
-  aes(x=value,y=Ventas, color=variable) + 
-  geom_point()+
-  labs(x='Presupuesto',y='Ventas',colour='Medio de comunicación')+
-  facet_wrap("variable")
-
-pairs(anuncios)
-p5
-p6
-
-
-##9. Correlaciones entre los datos
-
-anun.cor<- round(cor(anuncios), 3)
+anun.cor <- round(cor(anuncios), 3)
 
 anun.cor1 <- melt(anun.cor, id.vars = c("Ventas"),
                   measure.vars = c("TV", "radio", "periodico"))
@@ -157,11 +136,41 @@ anun.cor1 %>%
   theme_minimal() +
   labs(x='',y='', fill='Coeficiente de Correlación') 
 
+##9. Antes de pensar en el modelado, es interesante observar 
+#como se distribuyen los datos en una grafica con respecto a las ventas
+
+p5 <- anuncios.m1 %>%
+  ggplot()+ 
+  aes(x=value,y=Ventas, color=variable) + 
+  geom_point() 
+
+p6 <- anuncios.m1 %>%
+  ggplot() + 
+  aes(x=value,y=Ventas, color=variable) + 
+  geom_point() +
+  #modelo de regresion lineal 
+  geom_smooth(method = "lm", se = F, colour = "black") + 
+  labs(x='Presupuesto', 
+       y='Ventas', 
+       colour='Medio de comunicación') +
+  facet_wrap("variable", scales="free_x")
+
+pairs(anuncios)
+p5
+p6
+
+#El incremento de presupuesto en television esta aparentemente relacionado 
+#con un aumento de ventas, lo mismo ocurre con el presupuesto en radio, 
+#sin embargo, las el incremento en el presupuesto en periodico aparentemente 
+#no esta relacionado con con aunemtos de ventas. Analizaremos las regresion
+#multiple para ver su comportamiento
+
 #10. Regresion lineal multiple
 
 # partimos de una prueba de hipotesis donde 
-#H0: beta3 = beta5 = beta6 = beta7 = 0
-# es decir Ventas = beta0 + beta1*TV + beta2*radio + beta4*periodico + e (Reducido)
+#H0: beta1 = beta2 = beta3 = 0
+# es decir 
+#Ventas = beta0 + beta1*TV + beta2*radio + beta3*periodico + e
 # contra
 # H1: H0 no es verdad
 
@@ -169,13 +178,119 @@ attach(anuncios)
 m1 <- lm(Ventas ~ TV + radio +  periodico)
 
 summary(m1)
-round(vcov(m1),8)
-confint(m1,level=0.95) #Intervalos de confianza
-predict.at=data.frame(
-  TV=100, radio=30, periodico=40) #x0=(100,30,40)
-predict(m1,newdata=predict.at,
-        interval="prediction",level=0.95) #Pred Int for hat y0 given x0
 anova(m1)
+
+#el modelo presenta valores de p-value < 0.05, sin embargo, los valores del
+#p-value para el presupuesto en el periodico no es estadisticamente 
+#significativo por lo que reduciremos el modelo
+# Ventas = beta0 + beta1*TV + beta2*radio + e (Modelo Reducido)
+
+m2 <- update(m1, ~.-periodico)
+summary(m2)
+
+#### Analisis de covarianza
+
+#Procederemos a realizar un modelo con interaccion para poder analizar como se
+#comportan las variables si tienen inteaccion entre ellas y como se pueden
+# afectar a las ventas. Consideramos un modelo completo 
+# Ventas = beta0 + beta1*TV + beta2*radio + beta3*periodico + beta4*TV*radio
+#          + beta5*TV*Periodico + beta6*radio*periodico + e  (modelo completo)
+
+mfull <- lm(Ventas ~ (TV + radio + periodico)**2 )
+
+summary(mfull)
+
+#podemos observar que los coeficientes de la interaccion entre las variables
+#son estadisticamente significativos, excepto en el coeficiente entre
+#periodico y radio, pues no son estadisticamente significativos. Para analizar
+#como afecta el modelo completo con el modelo reducido realizamos una prueba
+#de ANOVA con respecto a las siguientes hipotesis
+
+# H0: beta4 = beta5 = beta6 = 0
+# es decir,
+# Ventas = beta0 + beta1*TV + beta2*radio + e (Modelo Reducido)
+# contra
+# H1: H0 no es verdad
+# es decir, 
+# Ventas = beta0 + beta1*TV + beta2*radio + beta3*periodico + beta4*TV*radio
+#          + beta5*TV*Periodico + beta6*radio*periodico + e  (modelo completo)
+
+anova(m2,mfull)
+
+# Dado que el p-value es menor a 0.05, aceptamos la hipótesis alterna, razon por
+# la que usaremos el modelo con todas sus interacciones para poder determinar 
+# las predicciones y los residuos. A partir de aqui podremos ver de que manera 
+# invertir en nuevos anuncios.
+
+#obtenemos los residuos estandarizados para todos los modelos y analizaremos
+#los residuales para determinar cual modelo cumple mejor la aleatoriedad
+
+StanRes1 <- rstandard(m1)
+StanRes2 <- rstandard(m2)
+StanRes3 <- rstandard(mfull)
+
+
+p7 <- ggplot()+ 
+  aes(x=m1$fitted.values, y=StanRes1) + 
+  geom_point(colour = "Green", show.legend = FALSE) + 
+  ggtitle("Residuales Estandarizados modelo 1") +
+  ylab("Residuales") +
+  xlab("Valores ajustados") + 
+  theme_light()
+
+p8 <- ggplot()+ 
+  aes(x=m2$fitted.values, y=StanRes2) + 
+  geom_point(colour = "Blue", show.legend = FALSE) + 
+  ggtitle("Residuales Estandarizados modelo reducido") +
+  ylab("Residuales") +
+  xlab("Valores ajustados") + 
+  theme_light()
+
+p9 <- ggplot()+ 
+  aes(x=mfull$fitted.values, y=StanRes3) + 
+  geom_point(colour = "Red", show.legend = FALSE) + 
+  ggtitle("Residuales Estandarizados modelo completo") +
+  ylab("Residuales") +
+  xlab("Valores ajustados") + 
+  theme_light()
+
+p10 <- ggplot()+ 
+  aes(sample = StanRes1) + 
+  stat_qq(colour = "Green") +
+  stat_qq_line() +
+  ggtitle("QQ plot - modelo 1") +
+  ylab("Residuales") +
+  xlab("Teoricos") + 
+  theme_light()
+
+p11 <- ggplot()+ 
+  aes(sample = StanRes2) + 
+  stat_qq(colour = "Blue") +
+  stat_qq_line() +
+  ggtitle("QQ plot - modelo reducido") +
+  ylab("Residuales") +
+  xlab("Teoricos") + 
+  theme_light()
+
+p12 <- ggplot()+ 
+  aes(sample = StanRes3) + 
+  stat_qq(colour = "Red") +
+  stat_qq_line() +
+  ggtitle("QQ plot - modelo completo") +
+  ylab("Residuales") +
+  xlab("Teoricos") + 
+  theme_light()
+
+
+grid.arrange(p7, p8, p9, 
+             p10, p11, p12, nrow = 2)
+
+#A partir de la grafica podemos observar que el modelo completo es el que mejor 
+#se ajusta a un modelo homocedástico. Por ultimo, realizamos el modelo ajustado
+#para poder realizar las predicciones necesarias respecto a la inversion
+
+plot(m1$fitted.values, Price, xlab = "Valores ajustados", ylab = "Price")
+abline(lsfit(m1$fitted.values, Price))
 
 #como podemos observar, y a partir del heatmap, el coeficiente 
 #de regresion para el numero de ventas por periodico 
@@ -184,3 +299,16 @@ anova(m1)
 
 m2 <- update(m1, ~.-periodico)
 summary(m2)
+round(vcov(m1),8)
+confint(m1,level=0.95) #Intervalos de confianza
+predict.at=data.frame(
+  TV=100, radio=30, periodico=40) #x0=(100,30,40)
+predict(m1,newdata=predict.at,
+        interval="prediction",level=0.95) #Pred Int for hat y0 given x0
+
+# Como conclusion principal, se tiene que la mejor inversion en anuncios se 
+# encuentra en la television, sin embargo, es posible modelar y estimar el 
+# numero de ventas a partir de un modelo con variables pareadas.
+
+# Recordemos las palabras de George Box: "Todos los modelos son erroneos, pero
+# algunos son utiles".
