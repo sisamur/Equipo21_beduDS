@@ -29,16 +29,16 @@ anuncios <- na.omit(anuncios) #esta de sobra
 
 ###Medidas de tendencia central
 
-media_ventas<-mean(anuncios$Ventas)
+media_ventas <- mean(anuncios$Ventas)
 mediana_ventas <- median(anuncios$Ventas)
 
-media_tv<-mean(anuncios$TV)
+media_tv <- mean(anuncios$TV)
 mediana_tv <- median(anuncios$TV)
 
-media_radio<-mean(anuncios$radio)
+media_radio <- mean(anuncios$radio)
 mediana_radio <- median(anuncios$radio)
 
-media_perio<-mean(anuncios$periodico)
+media_perio <- mean(anuncios$periodico)
 mediana_perio <- median(anuncios$periodico)
 
 ##6. Y para conocer si exiten algunos outliers, se realiza un 
@@ -47,15 +47,19 @@ mediana_perio <- median(anuncios$periodico)
 anuncios.m1 = melt(anuncios, id.vars = c("Ventas"),
                    measure.vars = c("TV", "radio", "periodico"))
 
-ggplot(anuncios.m1, aes(x=variable, y=value)) +
-  geom_boxplot(aes(fill=factor(variable)))+
-  ylab("Costo de Publicidad ($)") +
+anuncios.m1 %>%
+  ggplot() +
+  aes(x=variable, y=value) + 
+  geom_boxplot(aes(fill=factor(variable))) +
+  ylab("Presupuesto en Publicidad ($)") +
   xlab("") + 
-  labs(xlab = "", fill = "Medio de comunicación")
+  labs(fill = "Medio de comunicación")
 
 ## 7. histogramas
 
-p1 <- ggplot(anuncios, aes(Ventas)) +
+p1 <- anuncios %>% 
+  ggplot() +
+  aes(Ventas) + 
   geom_histogram( aes(y=..density..), binwidth = 2,
                   colour="black", fill="white") +
   geom_density(alpha=.2, fill="#FF6666") +
@@ -67,11 +71,13 @@ p1 <- ggplot(anuncios, aes(Ventas)) +
   geom_label(aes(x = media_ventas, y = 0.115, 
                  label = media_ventas), fill = "#FF6666")
 
-p2 <- ggplot(anuncios, aes(TV)) +
+p2 <- anuncios %>%
+  ggplot() +
+  aes(TV) +
   geom_histogram( aes(y=..density..), binwidth = 20, 
                   colour="black", fill="white") +
   geom_density(alpha=.2, fill="#FF6666") +
-  ggtitle("Inversión en TV") +
+  ggtitle("Presupuesto en TV") +
   ylab("Frecuencia") +
   xlab("TV") + 
   theme_light() +
@@ -79,11 +85,13 @@ p2 <- ggplot(anuncios, aes(TV)) +
   geom_label(aes(x = media_tv, y = 0.0074, 
                  label = media_tv), fill = "#FF6666")
 
-p3 <- ggplot(anuncios, aes(radio)) +
+p3 <- anuncios %>%
+  ggplot() +
+  aes(radio) + 
   geom_histogram( aes(y=..density..), binwidth = 3,
                   colour="black", fill="white") +
   geom_density(alpha=.2, fill="#FF6666") +
-  ggtitle("Inversión en Radio") +
+  ggtitle("Presupuesto en Radio") +
   ylab("Frecuencia") +
   xlab("Radio") + 
   theme_light()+
@@ -91,11 +99,13 @@ p3 <- ggplot(anuncios, aes(radio)) +
   geom_label(aes(x = media_radio, y = 0.04, 
                  label = media_radio), fill = "#FF6666")
 
-p4 <- ggplot(anuncios, aes(periodico)) +
+p4 <- anuncios %>%
+  ggplot() +
+  aes(periodico) +
   geom_histogram( aes(y=..density..), binwidth = 7,
                   colour="black", fill="white") +
   geom_density(alpha=.2, fill="#FF6666") +
-  ggtitle("Inversión en Periodico") +
+  ggtitle("Presupuesto en Periodico") +
   ylab("Frecuencia") +
   xlab("Periodico") + 
   theme_light()+
@@ -111,10 +121,16 @@ grid.arrange(p1, p2, p3, p4, nrow = 2)
 ##8. Antes de pensar en el modelado, es interesante observar 
 #como se distribuyen los datos en una grafica con respecto a las ventas
 
-p5 <- ggplot(anuncios.m1,aes(x=value,y=Ventas, color=variable))+ geom_point() 
+p5 <- anuncios.m1 %>%
+  ggplot()+ 
+  aes(x=value,y=Ventas, color=variable) + 
+  geom_point() 
 
-p6 <- ggplot(anuncios.m1,aes(x=value,y=Ventas, color=variable)) + geom_point()+
-  labs(x='Inversión',y='Ventas',colour='Medio de comunicación')+
+p6 <- anuncios.m1 %>%
+  ggplot() + 
+  aes(x=value,y=Ventas, color=variable) + 
+  geom_point()+
+  labs(x='Presupuesto',y='Ventas',colour='Medio de comunicación')+
   facet_wrap("variable")
 
 pairs(anuncios)
@@ -123,14 +139,16 @@ p6
 
 
 ##9. Correlaciones entre los datos
+
 anun.cor<- round(cor(anuncios), 3)
+
 anun.cor1 <- melt(anun.cor, id.vars = c("Ventas"),
                   measure.vars = c("TV", "radio", "periodico"))
 
 #heatmap de los coeficientes de correlacion
 
 anun.cor1 %>%
-  ggplot() + #tambien se puede realizar usando el aes...
+  ggplot() +
   aes(x = Var1, y = Var2) +
   geom_tile(aes(fill = value), colour = "black") + 
   scale_fill_gradient(low = "white", high = "blue") +
@@ -166,4 +184,3 @@ anova(m1)
 
 m2 <- update(m1, ~.-periodico)
 summary(m2)
-
