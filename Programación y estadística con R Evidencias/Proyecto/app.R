@@ -104,8 +104,8 @@ ui <-
                     tabItem(tabName = "reg",
                             fluidRow(
                                 titlePanel("Modelo de Regresión"), 
-                                plotOutput("model1", height = 650, width=650),
-                                plotOutput("model2", height = 650, width=650)
+                                plotOutput("model1", height = 650, width=850),
+                                plotOutput("model2", height = 650, width=850)
                             )
                     ),
                     
@@ -323,6 +323,8 @@ server <- function(input, output) {
     })
     
     output$model1 <- renderPlot({
+      anuncios.m1 = melt(anuncios, id.vars = c("Ventas"),
+                         measure.vars = c("TV", "radio", "periodico"))
     
     p5 <- anuncios.m1 %>%
         ggplot()+ 
@@ -332,6 +334,8 @@ server <- function(input, output) {
     })
     
     output$model2 <- renderPlot({
+      anuncios.m1 = melt(anuncios, id.vars = c("Ventas"),
+                         measure.vars = c("TV", "radio", "periodico"))
     p6 <- anuncios.m1 %>%
         ggplot() + 
         aes(x=value,y=Ventas, color=variable) + 
@@ -549,3 +553,4 @@ server <- function(input, output) {
 
 
 shinyApp(ui, server)
+
