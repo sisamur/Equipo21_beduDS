@@ -13,7 +13,7 @@ Este repositorio tiene como objeto, el ser utilizado para subir la evidencia cor
 # Video de Explicación:
 https://youtu.be/uvwlGdjcpkk
 
-#App Shiny:
+# App Shiny:
 https://lord-alfonso.shinyapps.io/final21/
 
 
