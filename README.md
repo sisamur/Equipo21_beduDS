@@ -10,6 +10,10 @@ Este repositorio tiene como objeto, el ser utilizado para subir la evidencia cor
 * Escobar Alfonso Miguel 
 * Montero María Dulce
 
+# Video de Explicación:
+https://youtu.be/uvwlGdjcpkk
 
+#App Shiny:
+https://lord-alfonso.shinyapps.io/final21/
 
 
