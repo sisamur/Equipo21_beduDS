@@ -7,8 +7,8 @@ Este repositorio tiene como objeto, el ser utilizado para subir la evidencia cor
 ## Integrantes del equipo:
 * Carrillo de la Cruz Juan Luis
 * Cervantes Varela José Luis
-* Escobar Alfonso Miguel 
-* Montero María Dulce
+* Miguel Escobar Alfonso 
+* Montero Dulce  María 
 
 # Video de Explicación:
 https://youtu.be/uvwlGdjcpkk
