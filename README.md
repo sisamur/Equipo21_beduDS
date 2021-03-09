@@ -15,7 +15,7 @@ Este repositorio tiene como objeto, el ser utilizado para subir la evidencia cor
 https://drive.google.com/file/d/1ewhoDzbjRjEWN3Ud-nMQnKRtmAm5AmV4/view?usp=sharing
 
 # Video de Explicación Python:
-
+https://youtu.be/kbjMhF_s9aQ
 
 # Video de Explicación R:
 https://youtu.be/uvwlGdjcpkk
