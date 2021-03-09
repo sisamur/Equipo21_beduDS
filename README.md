@@ -10,10 +10,17 @@ Este repositorio tiene como objeto, el ser utilizado para subir la evidencia cor
 * Miguel Escobar Alfonso 
 * Montero Dulce  María 
 
-# Video de Explicación:
+# Video de Explicación R:
 https://youtu.be/uvwlGdjcpkk
 
-# App Shiny:
+# App Shiny R:
 https://lord-alfonso.shinyapps.io/final21/
+
+
+#Video Explicación proyecto Python:
+
+#Colab Python
+https://drive.google.com/file/d/1ewhoDzbjRjEWN3Ud-nMQnKRtmAm5AmV4/view?usp=sharing
+
 
 
